@@ -14,8 +14,8 @@ public class UserDaoJDBCImpl implements UserDao {
 
     public void createUsersTable() {
 
-        try(Connection connection = Util.getConnection();
-            Statement statement = connection.createStatement()){
+        try (Connection connection = Util.getConnection();
+             Statement statement = connection.createStatement()) {
             String sql = "CREATE TABLE IF NOT EXISTS User" +
                     "(id INTEGER AUTO_INCREMENT NOT NULL," +
                     "name VARCHAR(55)," +
@@ -23,7 +23,7 @@ public class UserDaoJDBCImpl implements UserDao {
                     "age INT," +
                     "PRIMARY KEY (id))";
             statement.executeUpdate(sql);
-        }catch (SQLException e){
+        } catch (SQLException e) {
             e.printStackTrace();
         }
     }
@@ -31,27 +31,22 @@ public class UserDaoJDBCImpl implements UserDao {
     public void dropUsersTable() {
 
         try (Connection connection = Util.getConnection();
-        Statement statement = connection.createStatement()){
+             Statement statement = connection.createStatement()) {
             String sql = "DROP TABLE IF EXISTS User";
             statement.executeUpdate(sql);
-        }catch (SQLException e){
+        } catch (SQLException e) {
             e.printStackTrace();
         }
     }
 
     public void saveUser(String name, String lastName, byte age) {
-        try (Connection connection = Util.getConnection()) {
-            PreparedStatement preparedStatement = connection.prepareStatement(
-                    "INSERT INTO User (name, lastName, age) VALUES (?, ?, ?)"
-            );
+        try (Connection connection = Util.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(
+                "INSERT INTO User (name, lastName, age) VALUES (?, ?, ?)")) {
             preparedStatement.setString(1, name);
             preparedStatement.setString(2, lastName);
             preparedStatement.setByte(3, age);
-
             preparedStatement.executeUpdate();
-            System.out.println("User с именем - " + name + " добавлен в базу данных.");
-
-            preparedStatement.close(); // Закрываем PreparedStatement
 
         } catch (SQLException e) {
             e.printStackTrace();
@@ -60,10 +55,8 @@ public class UserDaoJDBCImpl implements UserDao {
 
 
     public void removeUserById(long id) {
-        try (Connection connection = Util.getConnection()) {
-            String sql = "DELETE FROM User WHERE id = ?";
-            PreparedStatement preparedStatement = connection.prepareStatement(sql);
-
+        try (Connection connection = Util.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement("DELETE FROM User WHERE id = ?")) {
             preparedStatement.setLong(1, id);
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
